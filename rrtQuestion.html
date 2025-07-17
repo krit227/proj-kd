@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="hop.png" type="image/png">
+  <title>คุณเคยพูดคุยเรื่อง RRT หรือไม่</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-purple-50 min-h-screen flex flex-col justify-between p-4">
+  <main class="flex flex-col items-center">
+    <br><br>
+    <h1 class="text-2xl font-bold text-center mb-6 text-purple-800">คุณเคยพูดคุยเรื่องการบำบัดทดแทนไต (RRT) หรือไม่?</h1>
+    <br>
+    <form id="rrtForm" class="w-full max-w-md">
+      <div class="flex flex-col space-y-4">
+        <label class="flex items-center space-x-2">
+          <input type="radio" name="rrtTalked" value="เคย" class="h-5 w-5 text-purple-700" required />
+          <span class="text-lg">เคย</span>
+        </label>
+        <label class="flex items-center space-x-2">
+          <input type="radio" name="rrtTalked" value="ไม่เคย" class="h-5 w-5 text-purple-700" required />
+          <span class="text-lg">ไม่เคย</span>
+        </label>
+        <button type="submit" class="mt-6 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl text-lg font-semibold">ไปต่อ</button>
+      </div>
+    </form>
+  </main>
+
+  <footer class="text-center text-sm text-gray-600 mt-10 border-t pt-4">
+    อ้างอิงจาก สมาคมโรคไตแห่งประเทศไทย<br />
+    <a href="https://www.nephrothai.org/wp-content/uploads/2023/06/e-BOOK-palliative-care.pdf" target="_blank" class="text-blue-600 underline">คำแนะนำสำหรับการดูแลรักษาสนันสนุนและประคับประคองผู้ป่วยโรคไตเรื้อรัง พ.ศ.2566</a>
+  </footer>
+
+  <script>
+    document.getElementById("rrtForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const selected = document.querySelector('input[name="rrtTalked"]:checked');
+      if (selected) {
+        // สามารถส่งข้อมูลไปยัง Google Sheets หรือเก็บไว้ใน localStorage ได้ตรงนี้
+        window.location.href = "rrt-choice.html"; // ไปหน้าถัดไป
+      }
+    });
+  </script>
+</body>
+</html>

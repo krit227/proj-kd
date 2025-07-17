@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="hop.png" type="image/png">
+  <title>เลือกวิธีการบำบัดทดแทนไต - RRT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-purple-50 min-h-screen flex flex-col justify-between p-4">
+  <main>
+    <br><br>
+    <h1 class="text-2xl font-bold text-center mb-6 text-purple-800">เลือกวิธีการบำบัดทดแทนไตที่คุณต้องการ</h1>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 mt-8 w-full max-w-4xl mx-auto">
+      <button onclick="showContent('Continuous Ambulatory Peritoneal Dialysis (CAPD)')"
+        class="bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full">รายละเอียด CAPD</button>
+      <button onclick="showContent('HemoDialysis (HD)')"
+        class="bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full">รายละเอียด HD</button>
+      <button onclick="showContent('Kidney Transplant (KT)')"
+        class="bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full">รายละเอียด KT</button>
+      <button onclick="showContent('Palliative Care')"
+        class="bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full">รายละเอียด Palliative Care</button>
+    </div>
+    <br><br>
+
+    <form id="rrtForm" class="w-full max-w-4xl mx-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
+        <label class="flex items-center bg-purple-100 p-4 rounded-xl">
+          <input type="radio" name="rrtOption" value="Continuous Ambulatory Peritoneal Dialysis (CAPD)" class="mr-3" />
+          CAPD (ล้างไตทางช่องท้อง)
+        </label>
+        <label class="flex items-center bg-purple-100 p-4 rounded-xl">
+          <input type="radio" name="rrtOption" value="HemoDialysis (HD)" class="mr-3" />
+          HD (ฟอกเลือด)
+        </label>
+        <label class="flex items-center bg-purple-100 p-4 rounded-xl">
+          <input type="radio" name="rrtOption" value="Kidney Transplant (KT)" class="mr-3" />
+          KT (ปลูกถ่ายไต)
+        </label>
+        <label class="flex items-center bg-purple-100 p-4 rounded-xl">
+          <input type="radio" name="rrtOption" value="Palliative Care" class="mr-3" />
+          Palliative Care (ดูแลแบบประคับประคอง)
+        </label>
+      </div>
+
+      <div class="mt-6 text-center">
+        <button type="button" onclick="showSelectedOption()"
+          class="bg-green-600 text-white text-lg font-semibold px-6 py-3 rounded-full shadow-md hover:bg-green-700">ยืนยันตัวเลือก</button>
+      </div>
+    </form>
+  </main>
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-xl max-w-lg w-[90%] max-h-[90%] overflow-y-auto p-6 relative">
+      <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-500 text-xl">&times;</button>
+      <h2 id="modalTitle" class="text-xl font-bold mb-4 text-purple-700"></h2>
+      <div id="modalContent" class="text-gray-800 leading-relaxed whitespace-pre-line"></div>
+    </div>
+  </div>
+
+  <!-- Alert Modal -->
+  <div id="alertBox" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white text-center p-6 rounded-xl shadow-lg max-w-md w-[90%]">
+      <p id="alertText" class="text-lg text-gray-800 font-semibold mb-4"></p>
+      <button onclick="closeAlert()"
+        class="mt-2 bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700">ปิด</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center text-sm text-gray-600 mt-10 border-t pt-4">
+    อ้างอิงจาก สมาคมโรคไตแห่งประเทศไทย<br />
+    <a href="https://www.nephrothai.org/wp-content/uploads/2023/06/e-BOOK-palliative-care.pdf" target="_blank"
+      class="text-blue-600 underline">คำแนะนำสำหรับการดูแลรักษาสนันสนุนและประคับประคองผู้ป่วยโรคไตเรื้อรัง พ.ศ.2566</a>
+  </footer>
+
+  <script>
+    const contents = {
+      'Continuous Ambulatory Peritoneal Dialysis (CAPD)': `ข้อดี\n • ผู้ป่วยสามารถล้างไตได้ด้วยตนเองที่บ้านหรือที่ทำงาน \n • ไม่ต้องเดินทางไปโรงพยาบาลบ่อย \n • เหมาะสำหรับผู้ป่วยที่มีปัญหาเกี่ยวกับหัวใจหรือเส้นเลือดที่ไม่สามารถฟอกเลือดได้ \nข้อเสีย \n • เสี่ยงต่อการติดเชื้อในช่องท้อง (Peritonitis) \n • ต้องปฏิบัติตามขั้นตอนการล้างไตอย่างเคร่งครัด \n • อาจมีภาวะน้ำเกินหรือภาวะน้ำตาลในเลือดสูงจากน้ำยาล้างไต`,
+      'HemoDialysis (HD)': `ข้อดี\n • สามารถขจัดของเสียและน้ำส่วนเกินได้อย่างมีประสิทธิภาพ \n • ได้รับการดูแลจากทีมแพทย์และพยาบาลผู้เชี่ยวชาญในศูนย์ไตเทียม \n • เหมาะสำหรับผู้ป่วยที่มีภาวะฉุกเฉิน เช่น ไตวายเฉียบพลัน \nข้อเสีย \n • ต้องเดินทางไปศูนย์ฟอกเลือด 2-3 ครั้งต่อสัปดาห์ ใช้เวลาประมาณ 4 ชั่วโมงต่อครั้ง \n • เสี่ยงต่อภาวะความดันโลหิตต่ำ ตะคริว และการติดเชื้อที่เส้นเลือด \n • ค่าใช้จ่ายสูงกว่าการล้างไตทางช่องท้องในบางกรณี`,
+      'Kidney Transplant (KT)': `ข้อดี\n • เป็นวิธีที่ดีที่สุดในแง่ของคุณภาพชีวิตและการทำงานของไต \n • ไม่ต้องพึ่งการฟอกเลือดหรือล้างไตอีกต่อไป \n • อายุยืนยาวกว่าวิธีอื่น \nข้อเสีย \n • ต้องใช้ยากดภูมิต้านทานตลอดชีวิต ซึ่งมีผลข้างเคียงและเพิ่มความเสี่ยงต่อการติดเชื้อ \n • กระบวนการตรวจความเข้ากันของไตอาจใช้เวลานาน \n • มีความเสี่ยงต่อการปฏิเสธไตใหม่`,
+      'Palliative Care': `ข้อดี\n • เน้นการดูแลอาการที่เกิดขึ้นและเพิ่มคุณภาพชีวิต \n • ไม่ต้องพึ่งการล้างไต \nข้อเสีย \n • ไม่สามารถยืดอายุการทำงานของไต \n • อาจไม่เหมาะสำหรับผู้ป่วยที่มีภาวะฉุกเฉินจากการคั่งของเสีย`
+    };
+
+    function showContent(topic) {
+      document.getElementById('modalTitle').innerText = topic;
+      document.getElementById('modalContent').innerText = contents[topic];
+      document.getElementById('modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.add('hidden');
+    }
+
+    function showSelectedOption() {
+      const selected = document.querySelector('input[name="rrtOption"]:checked');
+      const alertBox = document.getElementById('alertBox');
+      const alertText = document.getElementById('alertText');
+
+      if (!selected) {
+        alertText.innerText = "กรุณาเลือกวิธีการบำบัดทดแทนไตก่อนดำเนินการต่อ";
+        alertBox.classList.remove('hidden');
+        return;
+      }
+
+      const selectedValue = selected.value;
+
+      // เก็บ rrt ลงใน localStorage.ckdData
+      const stored = localStorage.getItem("ckdData");
+      if (stored) {
+        const data = JSON.parse(stored);
+        data.rrt = selectedValue;
+        localStorage.setItem("ckdData", JSON.stringify(data));
+        console.log("💾 เก็บ RRT ไว้ใน ckdData:", data);
+      }
+
+      // ไปยังหน้ารายละเอียดของแต่ละ RRT
+      if (selectedValue.includes("Continuous Ambulatory Peritoneal Dialysis (CAPD)")) {
+        window.location.href = "rrt-prep-capd.html";
+      } else if (selectedValue.includes("HemoDialysis (HD)")) {
+        window.location.href = "rrt-prep-hd.html";
+      } else if (selectedValue.includes("Kidney Transplant (KT)")) {
+        window.location.href = "rrt-prep-kt.html";
+      } else if (selectedValue.includes("Palliative Care")) {
+        window.location.href = "rrt-prep-palliative.html";
+      }
+    }
+
+
+    function closeAlert() {
+      document.getElementById('alertBox').classList.add('hidden');
+    }
+  </script>
+
+
+</body>
+
+</html>

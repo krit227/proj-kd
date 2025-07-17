@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="hop.png" type="image/png">
+  <title>แบบประเมินความพึงพอใจ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-yellow-50 min-h-screen flex flex-col justify-between p-4">
+  <main class="max-w-xl mx-auto">
+    <h1 class="text-3xl font-bold text-center text-yellow-800 mb-8">📝 แบบประเมินความพึงพอใจ</h1>
+
+    <div class="bg-white shadow-xl rounded-2xl p-6 space-y-6">
+      <p class="text-lg text-gray-700 font-medium text-center">คุณพึงพอใจต่อการใช้งานเว็บไซต์นี้มากน้อยเพียงใด?</p>
+
+      <form id="feedbackForm" class="flex flex-col items-center space-y-4">
+        <div class="flex justify-center gap-4 text-lg">
+          <label class="flex flex-col items-center">
+            <input type="radio" name="rating" value="1" class="sr-only" required />
+            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-red-200 hover:bg-red-300 cursor-pointer">1</div>
+          </label>
+          <label class="flex flex-col items-center">
+            <input type="radio" name="rating" value="2" class="sr-only" />
+            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-orange-200 hover:bg-orange-300 cursor-pointer">2</div>
+          </label>
+          <label class="flex flex-col items-center">
+            <input type="radio" name="rating" value="3" class="sr-only" />
+            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-yellow-300 hover:bg-yellow-400 cursor-pointer">3</div>
+          </label>
+          <label class="flex flex-col items-center">
+            <input type="radio" name="rating" value="4" class="sr-only" />
+            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-lime-300 hover:bg-lime-400 cursor-pointer">4</div>
+          </label>
+          <label class="flex flex-col items-center">
+            <input type="radio" name="rating" value="5" class="sr-only" />
+            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-green-300 hover:bg-green-400 cursor-pointer">5</div>
+          </label>
+        </div>
+
+        <textarea name="comment" rows="4" placeholder="แสดงความคิดเห็นเพิ่มเติม (ถ้ามี)"
+          class="w-full p-3 rounded-md border border-gray-300 resize-none focus:outline-none focus:ring-2 focus:ring-yellow-400"></textarea>
+
+        <button type="submit"
+          class="bg-yellow-500 text-white px-6 py-2 rounded-full font-semibold hover:bg-yellow-600">ส่งแบบประเมิน</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- ✅ Toast Notification -->
+  <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-green-600 text-white text-sm px-4 py-2 rounded-lg shadow-lg opacity-0 transition-opacity duration-300 z-50">
+    <span id="toastMessage">ส่งข้อมูลสำเร็จ!</span>
+  </div>
+
+  <script>
+    function showToast(message, type = "success") {
+      const toast = document.getElementById("toast");
+      const toastMessage = document.getElementById("toastMessage");
+
+      toastMessage.textContent = message;
+
+      toast.classList.remove("bg-green-600", "bg-red-600", "bg-yellow-600");
+      if (type === "success") toast.classList.add("bg-green-600");
+      else if (type === "error") toast.classList.add("bg-red-600");
+      else if (type === "warning") toast.classList.add("bg-yellow-600");
+
+      toast.classList.remove("opacity-0");
+      toast.classList.add("opacity-100");
+
+      setTimeout(() => {
+        toast.classList.remove("opacity-100");
+        toast.classList.add("opacity-0");
+      }, 3000);
+    }
+
+    document.getElementById("feedbackForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const rating = formData.get("rating");
+      const comment = formData.get("comment");
+
+      const stored = localStorage.getItem("ckdData");
+
+      if (!stored) {
+        showToast("ไม่พบข้อมูลการใช้งาน กรุณาเริ่มต้นใหม่", "warning");
+        console.warn("⚠️ ไม่มีข้อมูลใน ckdData");
+        return;
+      }
+
+      const data = JSON.parse(stored);
+      data.rating = rating;
+      data.comment = comment;
+      data.actionType = "full_submit";
+
+      const params = new URLSearchParams();
+      for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+          params.append(key, data[key]);
+        }
+      }
+
+      fetch("https://script.google.com/macros/s/AKfycbwx9_ZYBHzonCIgQ3GeOA6zoOfNnUYuAG_snyeQ1ifE09bGk6p0KX0pm62i_OvglFlSuA/exec", {
+        method: "POST",
+        body: params
+      })
+        .then(res => res.text())
+        .then(result => {
+          console.log("✅ ส่งข้อมูลทั้งหมดสำเร็จ:", result);
+          showToast("ขอบคุณสำหรับความคิดเห็นค่ะ 🙏", "success");
+          localStorage.removeItem("ckdData");
+          setTimeout(() => window.location.href = "index.html", 1500); // กลับหน้าหลักหลังแจ้งเตือน
+        })
+        .catch(err => {
+          console.error("❌ เกิดข้อผิดพลาดในการส่ง:", err);
+          showToast("เกิดข้อผิดพลาดในการส่งข้อมูล", "error");
+        });
+    });
+  </script>
+
+  <footer class="text-center text-sm text-gray-600 mt-10 border-t pt-4">
+    ข้อมูลของคุณจะถูกใช้เพื่อปรับปรุงคุณภาพของเว็บไซต์นี้
+  </footer>
+</body>
+</html>

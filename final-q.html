@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="hop.png" type="image/png">
+    <title>อาการน่าสงสัย</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-red-50 min-h-screen flex flex-col justify-between p-4">
+    <main class="max-w-3xl mx-auto">
+        <br>
+      <h1 class="text-3xl md:text-4xl font-bold text-center text-red-800 mb-6">
+        ❗ คุณมีอาการดังต่อไปนี้หรือไม่?
+      </h1>
+
+      <div class="bg-white shadow-xl rounded-2xl p-6 md:p-8 text-gray-800 text-base leading-relaxed space-y-4">
+        <p class="text-lg font-semibold text-red-700">เกณฑ์ข้อใดข้อหนึ่งต่อไปนี้:</p>
+
+        <p>1️⃣ ผู้ป่วยมีระดับ <strong>GFR ≤ 6 ml/min/1.73 ตร.ม.</strong> และไม่พบสาเหตุที่ทำให้ไตเสื่อมชั่วคราว</p>
+
+        <p class="text-center font-medium text-gray-500">หรือ</p>
+
+        <div>
+          <p>2️⃣ มีภาวะแทรกซ้อนจากโรคไตเรื้อรัง <strong>ที่ไม่ตอบสนองต่อการรักษา</strong> อย่างใดอย่างหนึ่ง:</p>
+          <ul class="list-disc list-inside ml-4 mt-2 space-y-1">
+            <li>อึดอัด บวมตามร่างกาย เหนื่อยเพลีย นอนราบไม่ได้</li>
+            <li>ง่วงซึม สับสน กระสับกระส่าย</li>
+            <li>ปัสสาวะน้อย ปวดศีรษะ ชักเกร็ง</li>
+            <li>หายใจหอบเหนื่อย</li>
+            <li>เจ็บแน่นหน้าอก หอบเหนื่อย</li>
+            <li>คลื่นไส้ อาเจียน เบื่ออาหาร น้ำหนักลด</li>
+          </ul>
+        </div>
+
+        <div class="flex flex-col md:flex-row justify-center gap-4 mt-6">
+          <button onclick="handleAnswer(true)" class="bg-red-600 text-white px-6 py-3 rounded-full font-semibold text-lg hover:bg-red-700 w-full md:w-auto">มี</button>
+          <button onclick="handleAnswer(false)" class="bg-green-600 text-white px-6 py-3 rounded-full font-semibold text-lg hover:bg-green-700 w-full md:w-auto">ไม่มี</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="alertModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 p-4">
+      <div class="bg-white p-6 rounded-xl shadow-xl max-w-md w-full text-center">
+        <p id="alertMessage" class="text-lg font-semibold text-gray-800 mb-4"></p>
+        <button onclick="closeModal()" class="bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700">ปิด</button>
+      </div>
+    </div>
+
+    <script>
+      function handleAnswer(hasSymptoms) {
+        const modal = document.getElementById('alertModal');
+        const message = document.getElementById('alertMessage');
+
+        if (hasSymptoms) {
+          message.innerText = "⚠️ กรุณามาพบแพทย์ด่วน !!! อาการของคุณอาจถึงเวลาที่ต้องฟอกไตแล้ว";
+        } else {
+          message.innerText = "✅ อย่าลืมมาหาคุณหมอตามนัดนะคะ";
+        }
+
+        modal.classList.remove('hidden');
+      }
+
+      function closeModal() {
+        document.getElementById('alertModal').classList.add('hidden');
+        window.location.href = "feedback.html"; // ลิงก์ไปยังหน้าเก็บแบบประเมินความพึงพอใจ
+      }
+    </script>
+
+    <footer class="text-center text-sm text-gray-600 mt-10 border-t pt-4">
+      อ้างอิงจาก ตำราการฟอกเลือดด้วยเครื่องไตเทียมและการพยาบาล (ฉบับปรับปรุง)<br />
+      <a href="https://www.rama.mahidol.ac.th/ramachannel/article/เช็กด่วน-อาการไตวายเรื้อรังระยะสุดท้าย" target="_blank" class="text-blue-600 underline">
+        อ่านเพิ่มเติมเกี่ยวกับอาการระยะสุดท้ายของโรคไต
+      </a>
+    </footer>
+  </body>
+</html>

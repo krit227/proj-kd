@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="hop.png" type="image/png">
+  <title>การปฏิบัติตัวในระยะนี้ - CKD Stage 4</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-purple-50 min-h-screen flex flex-col justify-between p-4">
+  <main>
+    <br><br>
+    <h1 class="text-2xl font-bold text-center mb-6 text-purple-800">การปฏิบัติตัวในระยะนี้</h1>
+    <br>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-4xl mx-auto">
+      <button onclick="showContent('อาหาร')"
+        class="bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full hover:bg-purple-800">อาหาร</button>
+      <button onclick="showContent('ยา')"
+        class="bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full hover:bg-purple-800">ยา</button>
+      <button onclick="showContent('ติดตามผลและการวางแผนล่วงหน้า')"
+        class="bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full hover:bg-purple-800">ติดตาม</button>
+      <button onclick="showContent('งด')"
+        class="bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full hover:bg-purple-800">งด</button>
+      <button onclick="showContent('เตรียมตัวเรื่องทางเลือกการบำบัดทดแทนไต')"
+        class="bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full hover:bg-purple-800">เตรียมตัว</button>
+    </div>
+    <!-- ปุ่มหน้าถัดไป (ติดล่างจอ) -->
+    <div class="mt-10 text-center">
+      <a href="rrtQuestion.html" class="inline-block bg-green-600 text-white text-lg font-semibold px-6 py-3 rounded-full shadow-md hover:bg-green-700">ปุ่มหน้าถัดไป</a>
+    </div>
+
+  </main>
+
+
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-xl max-w-lg w-[90%] max-h-[90%] overflow-y-auto p-6 relative">
+      <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-500 text-xl">&times;</button>
+      <h2 id="modalTitle" class="text-xl font-bold mb-4 text-purple-700"></h2>
+      <div id="modalContent" class="text-gray-800 leading-relaxed whitespace-pre-line"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center text-sm text-gray-600 mt-10 border-t pt-4">
+    อ้างอิงจาก สมาคมโรคไตแห่งประเทศไทย<br />
+    <a href="https://www.nephrothai.org/wp-content/uploads/2023/03/CKD-guideline-2565-revised-edition.pdf"
+      target="_blank" class="text-blue-600 underline">คำแนะนำสำหรับผู้ป่วยโรคไตเรื้อรัง</a>
+  </footer>
+
+  <script>
+    const contents = {
+      'อาหาร': `• ลดเค็ม: กินโซเดียม < 2,000 มก./วัน\n• หลีกเลี่ยงน้ำดื่มหรืออาหารแปรรูป\n• หลีกเลี่ยงอาหารทอด มัน\n• ลดปริมาณโปรตีน (0.6-0.8 กรัม/กก./วัน)\n• ปรึกษานักโภชนาการสำหรับเมนูที่เหมาะสม`,
+      'ยา': `• ใช้ยากลุ่ม ACEI หรือ ARB หากมีโปรตีนในปัสสาวะ และไม่มีข้อห้าม\n• ใช้ยาเบาหวาน (เช่น INSULIN) ตามแพทย์สั่ง\n• ใช้ยาลดไขมัน (เช่น STATIN) ตามแพทย์สั่ง\n• รับการฉีดวัคซีน เช่น วัคซีนป้องกันไข้หวัดใหญ่ ปอดอักเสบ`,
+      'ติดตามผลและการวางแผนล่วงหน้า': `• เวลามีเลือดตรวจ eGFR และโปรตีนในปัสสาวะทุก 3-4 เดือน\n• ควบคุมความดันโลหิต < 130/80 mmHg\n• ในผู้ป่วยเบาหวาน ให้ดู HbA1c < 7%\n• ตรวจเลือดเพื่อดูความสมดุลของแร่ธาตุ เช่น แคลเซียม ฟอสฟอรัส พาราไทรอยด์ฮอร์โมน (PTH)`,
+      'งด': `• งดสูบบุหรี่และแอลกอฮอล์ ลดความเสี่ยงโรคหัวใจและไตเสื่อมเร็ว\n• งดออกกำลังกายหนัก`,
+      'เตรียมตัวเรื่องทางเลือกการบำบัดทดแทนไต': `• พูดคุยกับทีมแพทย์เรื่องทางเลือกในการฟอกไต\n• เริ่มวางแผนการเตรียมเส้นฟอกเลือด (AV Fistula) ล่วงหน้า`
+    }
+
+    function showContent(topic) {
+      document.getElementById('modalTitle').innerText = topic
+      document.getElementById('modalContent').innerText = contents[topic]
+      document.getElementById('modal').classList.remove('hidden')
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.add('hidden')
+    }
+  </script>
+</body>
+
+</html>
