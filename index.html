@@ -7,72 +7,66 @@
   <link rel="icon" href="hop.png" type="image/png">
   <title>โปรแกรมช่วยในการเตรียมตัวก่อนฟอกเลือด</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link href="styles/main.css" rel="stylesheet">
-  <link href="styles/components.css" rel="stylesheet">
 </head>
 
 <body class="bg-gray-100 min-h-screen flex flex-col justify-between px-4">
-  <!-- Network status indicator will be inserted here by JavaScript -->
   <div class="flex-grow flex items-center justify-center">
     <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full">
       <h1 class="text-2xl font-bold text-center text-blue-800 mb-6">โปรแกรมช่วยในการเตรียมตัวก่อนฟอกเลือด</h1>
-      
-      <!-- Error message container -->
-      <div id="errorContainer" class="error-message"></div>
-      
       <form id="egfrForm" class="space-y-4">
-        <div class="form-field">
+        <div>
           <label class="block font-medium text-gray-700">อายุ (ปี)</label>
-          <input type="number" name="age" required class="form-input mt-1 w-full border rounded px-3 py-2" min="0" max="120">
+          <input type="number" name="age" required class="mt-1 w-full border rounded px-3 py-2">
         </div>
-        <div class="form-field">
+        <div>
           <label class="block font-medium text-gray-700">น้ำหนัก (กก.)</label>
-          <input type="number" name="weight" step="0.01" required class="form-input mt-1 w-full border rounded px-3 py-2" min="1" max="300">
+          <input type="number" name="weight" step="0.01" required class="mt-1 w-full border rounded px-3 py-2">
         </div>
-        <div class="form-field">
+        <div>
           <label class="block font-medium text-gray-700">ค่า Serum Creatinine (mg/dL)</label>
-          <input type="number" name="creatinine" step="0.01" required class="form-input mt-1 w-full border rounded px-3 py-2" min="0.01" max="100">
+          <input type="number" name="creatinine" step="0.01" required class="mt-1 w-full border rounded px-3 py-2">
         </div>
-        <div class="form-field">
+        <div>
           <label class="block font-medium text-gray-700">เพศ</label>
-          <select name="gender" required class="form-select mt-1 w-full border rounded px-3 py-2">
+          <select name="gender" required class="mt-1 w-full border rounded px-3 py-2">
             <option value="">-- เลือกเพศ --</option>
             <option value="male">ชาย</option>
             <option value="female">หญิง</option>
           </select>
         </div>
-        <button type="submit" class="btn-primary w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700">คำนวณ eGFR</button>
+        <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700">คำนวณ
+          eGFR</button>
       </form>
 
       <!-- Modal -->
-      <div id="modal" class="modal-backdrop fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden">
-        <div class="modal-content bg-white p-6 rounded-xl shadow-lg max-w-sm w-full">
-          <div class="modal-header">
-            <h2 class="modal-title text-lg font-semibold">ผลการคำนวณ eGFR</h2>
-            <button class="modal-close text-gray-500 text-xl" aria-label="ปิด">&times;</button>
+      <div id="modal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-xl shadow-lg max-w-sm w-full">
+          <p class="text-lg font-medium">ค่า eGFR ของคุณคือ: <span id="egfrValue"
+              class="font-bold text-blue-800"></span></p>
+          <p class="text-lg font-medium mt-2">คุณอยู่ในกลุ่ม: <span id="egfrCategory"
+              class="font-bold text-green-700"></span></p>
+          <p class="text-sm text-gray-600 mt-2">*สูตรการคำนวณ: Cockcroft-Gault Equation</p>
+
+          <div id="advice" class="mt-4 hidden border border-yellow-300 bg-yellow-100 p-4 rounded-xl">
+            <h2 class="font-bold text-yellow-800 mb-2">คำแนะนำ</h2>
+            <p class="text-yellow-900">อย่าลืมมา “หาหมอ ตามนัด” น้าา</p>
           </div>
-          
-          <div class="modal-body">
-            <p class="text-lg font-medium">ค่า eGFR ของคุณคือ: <span id="egfrValue" class="font-bold text-blue-800"></span></p>
-            <p class="text-lg font-medium mt-2">คุณอยู่ในกลุ่ม: <span id="egfrCategory" class="font-bold text-green-700"></span></p>
-            <p class="text-sm text-gray-600 mt-2">*สูตรการคำนวณ: Cockcroft-Gault Equation</p>
 
-            <div id="advice" class="alert alert-warning mt-4 hidden">
-              <h3 class="font-bold mb-2">คำแนะนำ</h3>
-              <p>อย่าลืมมา "หาหมอ ตามนัด" น้าค่ะ</p>
-            </div>
-
-            <div id="g4ButtonContainer" class="mt-4 hidden text-center">
-              <a href="g4.html" class="btn-primary inline-block bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">คำแนะนำเพิ่มเติมสำหรับ G4</a>
-            </div>
-
-            <div id="g5ButtonContainer" class="mt-4 hidden text-center">
-              <a href="rrtQuestionG5.html" class="btn-primary inline-block bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">คำแนะนำเพิ่มเติมสำหรับ G5</a>
-            </div>
+          <div id="g4ButtonContainer" class="mt-4 hidden text-center">
+            <a href="g4.html"
+              class="inline-block bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">คำแนะนำเพิ่มเติมสำหรับ
+              G4</a>
           </div>
-          
-          <div class="modal-footer">
-            <button class="btn-secondary modal-close bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">ปิด</button>
+
+          <div id="g5ButtonContainer" class="mt-4 hidden text-center">
+            <a href="rrtQuestionG5.html"
+              class="inline-block bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">คำแนะนำเพิ่มเติมสำหรับ
+              G5</a>
+          </div>
+
+          <div class="mt-4 text-center">
+            <button onclick="document.getElementById('modal').classList.add('hidden')"
+              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">ปิด</button>
           </div>
         </div>
       </div>
@@ -85,11 +79,90 @@
       class="text-blue-600 underline">ข้อมูลเพิ่มเติมเกี่ยวกับโรคไตและการคำนวณ eGFR</a>
   </footer>
 
-  <!-- JavaScript files -->
-  <script src="js/utils.js"></script>
-  <script src="js/calculations.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/main.js"></script>
+  <!-- เฉพาะส่วน JavaScript ด้านล่างที่แก้ไข -->
+  <script>
+    function generateUUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+  
+    if (!localStorage.getItem("sessionId")) {
+      localStorage.setItem("sessionId", generateUUID());
+    }
+    const sessionId = localStorage.getItem("sessionId");
+  
+    document.getElementById('egfrForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+  
+      const age = parseInt(this.age.value);
+      const weight = parseFloat(this.weight.value);
+      const serumCreatinine = parseFloat(this.creatinine.value);
+      const gender = this.gender.value;
+  
+      let eGFR = 0;
+      if (gender === 'male') {
+        eGFR = ((140 - age) * weight) / (72 * serumCreatinine);
+      } else if (gender === 'female') {
+        eGFR = ((140 - age) * weight * 0.85) / (72 * serumCreatinine);
+      }
+  
+      let category = '';
+      if (eGFR >= 90) category = 'G1';
+      else if (eGFR >= 60) category = 'G2';
+      else if (eGFR >= 45) category = 'G3a';
+      else if (eGFR >= 30) category = 'G3b';
+      else if (eGFR >= 15) category = 'G4';
+      else category = 'G5';
+  
+      // แสดงผล
+      document.getElementById('egfrValue').textContent = eGFR.toFixed(2) + ' mL/min';
+      document.getElementById('egfrCategory').textContent = category;
+      document.getElementById('modal').classList.remove('hidden');
+  
+      document.getElementById('advice').classList.toggle('hidden', eGFR < 30);
+      document.getElementById('g4ButtonContainer').classList.toggle('hidden', category !== 'G4');
+      document.getElementById('g5ButtonContainer').classList.toggle('hidden', category !== 'G5');
+  
+      const data = {
+        sessionId,
+        age,
+        weight,
+        serumCreatinine,
+        gender,
+        egfr: eGFR.toFixed(2),
+        stage: category
+      };
+  
+      if (category === 'G1' || category === 'G2' || category === 'G3a' || category === 'G3b') {
+        // ส่งไป Google Sheet ทันที (ใช้ URLSearchParams)
+        const params = new URLSearchParams();
+        for (const key in data) {
+          params.append(key, data[key]);
+        }
+  
+        fetch('https://script.google.com/macros/s/AKfycbwx9_ZYBHzonCIgQ3GeOA6zoOfNnUYuAG_snyeQ1ifE09bGk6p0KX0pm62i_OvglFlSuA/exec', {
+          method: "POST",
+          body: params
+        })
+          .then(res => res.text())
+          .then(result => {
+            console.log("✅ บันทึกสำเร็จ:", result);
+          })
+          .catch(err => {
+            console.error("❌ เกิดข้อผิดพลาดในการบันทึก:", err);
+            e.target.reset(); 
+          });
+  
+      } else {
+        // G4–G5: เก็บไว้ก่อน
+        localStorage.setItem("ckdData", JSON.stringify(data));
+        console.log("📦 เก็บข้อมูลไว้ใน localStorage:", data);
+      }
+    });
+  </script>
   
 
 </body>
