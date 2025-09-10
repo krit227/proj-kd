@@ -356,7 +356,7 @@ class KidneyDialysisApp {
     const allRules = {
       age: ['required', 'positiveNumber', { rule: 'range', params: [0, 120], message: 'อายุต้องอยู่ระหว่าง 0-120 ปี' }],
       weight: ['required', 'positiveNumber', { rule: 'range', params: [1, 300], message: 'น้ำหนักต้องอยู่ระหว่าง 1-300 กก.' }],
-      creatinine: ['required', 'positiveNumber', { rule: 'range', params: [0.1, 20], message: 'ค่า Creatinine ต้องอยู่ระหว่าง 0.1-20 mg/dL' }],
+      creatinine: ['required', 'positiveNumber', { rule: 'range', params: [0.01, 100], message: 'ค่า Creatinine ต้องอยู่ระหว่าง 0.01-100 mg/dL' }],
       gender: ['required'],
       rating: ['required']
     };
