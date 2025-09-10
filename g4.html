@@ -7,28 +7,31 @@
   <link rel="icon" href="hop.png" type="image/png">
   <title>การปฏิบัติตัวในระยะนี้ - CKD Stage 4</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="styles/main.css" rel="stylesheet">
+  <link href="styles/components.css" rel="stylesheet">
 </head>
 
 <body class="bg-purple-50 min-h-screen flex flex-col justify-between p-4">
+  <!-- Network status indicator will be inserted here by JavaScript -->
   <main>
     <br><br>
     <h1 class="text-2xl font-bold text-center mb-6 text-purple-800">การปฏิบัติตัวในระยะนี้</h1>
     <br>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-4xl mx-auto">
+    <div class="grid grid-responsive grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-4xl mx-auto">
       <button onclick="showContent('อาหาร')"
-        class="bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full hover:bg-purple-800">อาหาร</button>
+        class="btn-primary bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full hover:bg-purple-800">อาหาร</button>
       <button onclick="showContent('ยา')"
-        class="bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full hover:bg-purple-800">ยา</button>
+        class="btn-primary bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full hover:bg-purple-800">ยา</button>
       <button onclick="showContent('ติดตามผลและการวางแผนล่วงหน้า')"
-        class="bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full hover:bg-purple-800">ติดตาม</button>
+        class="btn-primary bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full hover:bg-purple-800">ติดตาม</button>
       <button onclick="showContent('งด')"
-        class="bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full hover:bg-purple-800">งด</button>
+        class="btn-primary bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full hover:bg-purple-800">งด</button>
       <button onclick="showContent('เตรียมตัวเรื่องทางเลือกการบำบัดทดแทนไต')"
-        class="bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full hover:bg-purple-800">เตรียมตัว</button>
+        class="btn-primary bg-purple-700 text-white p-4 rounded-xl text-xl font-semibold w-full hover:bg-purple-800">เตรียมตัว</button>
     </div>
     <!-- ปุ่มหน้าถัดไป (ติดล่างจอ) -->
     <div class="mt-10 text-center">
-      <a href="rrtQuestion.html" class="inline-block bg-green-600 text-white text-lg font-semibold px-6 py-3 rounded-full shadow-md hover:bg-green-700">ปุ่มหน้าถัดไป</a>
+      <a href="rrtQuestion.html" class="btn-success inline-block bg-green-600 text-white text-lg font-semibold px-6 py-3 rounded-full shadow-md hover:bg-green-700">ปุ่มหน้าถัดไป</a>
     </div>
 
   </main>
@@ -36,11 +39,15 @@
 
 
   <!-- Modal -->
-  <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-    <div class="bg-white rounded-xl max-w-lg w-[90%] max-h-[90%] overflow-y-auto p-6 relative">
-      <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-500 text-xl">&times;</button>
-      <h2 id="modalTitle" class="text-xl font-bold mb-4 text-purple-700"></h2>
-      <div id="modalContent" class="text-gray-800 leading-relaxed whitespace-pre-line"></div>
+  <div id="modal" class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="modal-content bg-white rounded-xl max-w-lg w-[90%] max-h-[90%] overflow-y-auto p-6 relative">
+      <div class="modal-header">
+        <h2 id="modalTitle" class="modal-title text-xl font-bold mb-4 text-purple-700"></h2>
+        <button onclick="closeModal()" class="modal-close absolute top-2 right-2 text-gray-500 text-xl">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="modalContent" class="text-gray-800 leading-relaxed whitespace-pre-line"></div>
+      </div>
     </div>
   </div>
 
@@ -51,6 +58,9 @@
       target="_blank" class="text-blue-600 underline">คำแนะนำสำหรับผู้ป่วยโรคไตเรื้อรัง</a>
   </footer>
 
+  <!-- JavaScript files -->
+  <script src="js/utils.js"></script>
+  <script src="js/main.js"></script>
   <script>
     const contents = {
       'อาหาร': `• ลดเค็ม: กินโซเดียม < 2,000 มก./วัน\n• หลีกเลี่ยงน้ำดื่มหรืออาหารแปรรูป\n• หลีกเลี่ยงอาหารทอด มัน\n• ลดปริมาณโปรตีน (0.6-0.8 กรัม/กก./วัน)\n• ปรึกษานักโภชนาการสำหรับเมนูที่เหมาะสม`,
@@ -61,14 +71,32 @@
     }
 
     function showContent(topic) {
-      document.getElementById('modalTitle').innerText = topic
-      document.getElementById('modalContent').innerText = contents[topic]
-      document.getElementById('modal').classList.remove('hidden')
+      try {
+        document.getElementById('modalTitle').innerText = topic
+        document.getElementById('modalContent').innerText = contents[topic]
+        document.getElementById('modal').classList.remove('hidden')
+      } catch (error) {
+        console.error('Error showing content:', error)
+        if (window.KDUtils) {
+          window.KDUtils.toastManager.error('เกิดข้อผิดพลาดในการแสดงเนื้อหา')
+        }
+      }
     }
 
     function closeModal() {
-      document.getElementById('modal').classList.add('hidden')
+      try {
+        document.getElementById('modal').classList.add('hidden')
+      } catch (error) {
+        console.error('Error closing modal:', error)
+      }
     }
+
+    // Enhanced keyboard navigation
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        closeModal()
+      }
+    })
   </script>
 </body>
 
